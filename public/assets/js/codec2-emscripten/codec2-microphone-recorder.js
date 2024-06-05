@@ -5,7 +5,6 @@ class Codec2MicrophoneRecorder {
 
     constructor() {
 
-        this.sampleRate = 8000;
         this.codec2Mode = "1200";
         this.audioChunks = [];
 
@@ -20,7 +19,7 @@ class Codec2MicrophoneRecorder {
         try {
 
             // load audio worklet module
-            this.audioContext = new AudioContext({ sampleRate: this.sampleRate });
+            this.audioContext = new AudioContext();
             await this.audioContext.audioWorklet.addModule('assets/js/codec2-emscripten/processor.js');
             this.audioWorkletNode = new AudioWorkletNode(this.audioContext, 'audio-processor');
 
@@ -79,7 +78,7 @@ class Codec2MicrophoneRecorder {
         }
 
         // convert audio to wav
-        const buffer = WavEncoder.encodeWAV(fullAudio, this.sampleRate);
+        const buffer = WavEncoder.encodeWAV(fullAudio, this.audioContext.sampleRate);
 
         // convert wav audio to codec2
         const rawBuffer = await Codec2Lib.audioFileToRaw(buffer, "audio.wav");
